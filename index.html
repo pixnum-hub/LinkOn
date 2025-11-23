@@ -9,34 +9,60 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
-:root{--bg:#f0f2f5;--card:#fff;--text:#000;--primary:#007bff;--alert:#ff4d4d;--warn:#ffa500;--good:#28c76f;}
-body.dark{--bg:#1e1e2f;--card:#2e2e3e;--text:#fff;--primary:#4ea3ff;}
-body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:10px;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
-#statusBanner{width:100%;max-width:700px;text-align:center;padding:10px;border-radius:12px;margin:0 auto 10px auto;font-weight:bold;color:#fff;font-size:16px;}
-.header{width:100%;max-width:700px;display:flex;justify-content:center;align-items:center;position:relative;margin-bottom:10px;}
-.header h1{margin:0;font-size:26px;}
-.toggle-btn{position:absolute;right:0;top:0;width:45px;height:45px;border-radius:50%;border:2px solid var(--primary);background:var(--bg);display:flex;justify-content:center;align-items:center;cursor:pointer;font-weight:bold;}
-.tabs{display:flex;width:100%;max-width:700px;margin-bottom:10px;overflow-x:auto;}
-.tab-btn{flex:1;padding:10px;background:var(--card);border:none;border-bottom:2px solid transparent;cursor:pointer;}
+:root{
+  --bg:#f0f2f5; --card:#fff; --text:#000; --primary:#007bff; 
+  --alert:#ff4d4d; --warn:#ffa500; --good:#28c76f;
+}
+body.dark{
+  --bg:#1e1e2f; --card:#2e2e3e; --text:#fff; --primary:#4ea3ff;
+}
+body{
+  font-family:Arial,sans-serif; background:var(--bg); color:var(--text);
+  margin:0; padding:10px; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+}
+#statusBanner{
+  width:100%; max-width:700px; text-align:center; padding:10px;
+  border-radius:12px; margin:0 auto 10px auto; font-weight:bold; color:#fff; font-size:16px;
+}
+.header{
+  width:100%; max-width:700px; display:flex; justify-content:center; align-items:center;
+  position:relative; margin-bottom:10px;
+}
+.header h1{margin:0; font-size:26px;}
+.toggle-btn{
+  position:absolute; right:0; top:0; width:45px; height:45px;
+  border-radius:50%; border:2px solid var(--primary); background:var(--bg);
+  display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:bold;
+}
+.tabs{
+  display:flex; width:100%; max-width:700px; margin-bottom:10px; overflow-x:auto;
+}
+.tab-btn{
+  flex:1; padding:10px; background:var(--card); border:none; border-bottom:2px solid transparent; cursor:pointer;
+}
 .tab-btn.active{border-bottom:2px solid var(--primary);}
-.container{max-width:700px;width:100%;}
-.card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-.card h2{margin:0 0 10px 0;font-size:20px;}
-.info{display:flex;justify-content:space-between;font-size:16px;margin:6px 0;flex-wrap:wrap;align-items:center;}
-.value{display:flex;gap:4px;}
-button{padding:8px 16px;border:none;border-radius:8px;background:var(--primary);color:#fff;margin:5px 5px 0 0;}
-canvas{margin-top:20px;max-width:100%;}
-#map{height:300px;border-radius:12px;margin-top:20px;width:100%;}
+.container{max-width:700px; width:100%;}
+.card{
+  background:var(--card); border-radius:12px; padding:20px; margin-bottom:20px; 
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+.card h2{margin:0 0 10px 0; font-size:20px;}
+.info{display:flex; justify-content:space-between; font-size:16px; margin:6px 0; flex-wrap:wrap; align-items:center;}
+.value{display:flex; gap:4px;}
+button{padding:8px 16px; border:none; border-radius:8px; background:var(--primary); color:#fff; margin:5px 5px 0 0;}
+canvas{margin-top:20px; max-width:100%;}
+#map{height:300px; border-radius:12px; margin-top:20px;}
 .alert{font-weight:bold;}
-footer{text-align:center;font-size:14px;color:var(--text);margin-top:10px;}
-input{width:60px;padding:5px;margin-left:5px;border-radius:4px;border:1px solid #ccc;}
-.server-input{width:calc(100% - 100px);margin-right:5px;padding:5px;border-radius:4px;border:1px solid #ccc;}
-.server-row{display:flex;margin-bottom:5px;align-items:center;}
-table{width:100%;border-collapse:collapse;margin-top:10px;}
-table th,table td{border:1px solid #ccc;padding:5px;text-align:center;}
+footer{text-align:center; font-size:14px; color:var(--text); margin-top:10px;}
+input{width:60px; padding:5px; margin-left:5px; border-radius:4px; border:1px solid #ccc;}
+.server-input{width:calc(100% - 100px); margin-right:5px; padding:5px; border-radius:4px; border:1px solid #ccc;}
+.server-row{display:flex; margin-bottom:5px; align-items:center;}
+table{width:100%; border-collapse:collapse; margin-top:10px; display:block; overflow-x:auto; white-space:nowrap;}
+table th, table td{border:1px solid #ccc; padding:5px; text-align:center;}
 </style>
 </head>
 <body>
+
 <div id="statusBanner">Loading Network Status...</div>
 
 <div class="header">
@@ -79,6 +105,7 @@ table th,table td{border:1px solid #ccc;padding:5px;text-align:center;}
 <h2>Interactive Charts</h2>
 <canvas id="pingChart" height="150"></canvas>
 <canvas id="speedChart" height="150"></canvas>
+<canvas id="serverChart" height="150"></canvas>
 </div>
 
 <!-- Servers -->
@@ -87,7 +114,14 @@ table th,table td{border:1px solid #ccc;padding:5px;text-align:center;}
 <div id="serverList"></div>
 <button onclick="addServer()">Add Server</button>
 <h3>Latency Summary</h3>
-<table id="serverTable"><thead><tr><th>Server</th><th>Min(ms)</th><th>Max(ms)</th><th>Avg(ms)</th></tr></thead><tbody></tbody></table>
+<div style="overflow-x:auto;">
+  <table id="serverTable">
+    <thead>
+      <tr><th>Server</th><th>Min(ms)</th><th>Max(ms)</th><th>Avg(ms)</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 </div>
 
 <!-- Settings -->
@@ -106,6 +140,7 @@ table th,table td{border:1px solid #ccc;padding:5px;text-align:center;}
 <h2>Server & User Map</h2>
 <div id="map"></div>
 </div>
+
 </div>
 <footer>© Manik Roy 2025 | All Rights Reserved.</footer>
 
@@ -126,42 +161,28 @@ function toggleTheme(){
 
 // ===== Servers =====
 let servers=JSON.parse(localStorage.getItem('servers'))||['https://www.google.com','https://www.cloudflare.com'];
-function renderServers(){
-    const list=document.getElementById('serverList');list.innerHTML='';
-    servers.forEach((s,i)=>{
-        const row=document.createElement('div');row.className='server-row';
-        row.innerHTML=`<input class="server-input" value="${s}" onchange="updateServer(${i},this.value)"><button onclick="removeServer(${i})">Remove</button>`;
-        list.appendChild(row);
-    });
-}
+function renderServers(){const list=document.getElementById('serverList');list.innerHTML='';servers.forEach((s,i)=>{const row=document.createElement('div');row.className='server-row';row.innerHTML=`<input class="server-input" value="${s}" onchange="updateServer(${i},this.value)"><button onclick="removeServer(${i})">Remove</button>`;list.appendChild(row);});}
 function addServer(){servers.push('https://');renderServers();saveServers();}
 function removeServer(i){servers.splice(i,1);renderServers();saveServers();}
 function updateServer(i,val){servers[i]=val;saveServers();}
 function saveServers(){localStorage.setItem('servers',JSON.stringify(servers));renderServerTable();}
-function saveThresholds(){
-    localStorage.setItem('thresholds',JSON.stringify({
-        ping:parseInt(document.getElementById('thPing').value),
-        jitter:parseInt(document.getElementById('thJitter').value),
-        packet:parseInt(document.getElementById('thPacket').value),
-        download:parseInt(document.getElementById('thDownload').value),
-        upload:parseInt(document.getElementById('thUpload').value)
-    }));
-}
+function saveThresholds(){localStorage.setItem('thresholds',JSON.stringify({ping:parseInt(document.getElementById('thPing').value),jitter:parseInt(document.getElementById('thJitter').value),packet:parseInt(document.getElementById('thPacket').value),download:parseInt(document.getElementById('thDownload').value),upload:parseInt(document.getElementById('thUpload').value)}));}
 
 // ===== Charts =====
 const pingCtx=document.getElementById('pingChart').getContext('2d');
 const speedCtx=document.getElementById('speedChart').getContext('2d');
-
+const serverCtx=document.getElementById('serverChart').getContext('2d');
 const pingData={labels:[],datasets:[{label:'Ping',data:[],borderColor:'rgba(0,123,255,1)',fill:true,tension:0.3}]};
 const speedData={labels:[],datasets:[{label:'Download',data:[],borderColor:'rgba(40,200,100,1)',fill:false},{label:'Upload',data:[],borderColor:'rgba(255,99,132,1)',fill:false}]};
-
+const serverData={labels:[],datasets:[]};
 const pingChart=new Chart(pingCtx,{type:'line',data:pingData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
 const speedChart=new Chart(speedCtx,{type:'line',data:speedData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
+const serverChart=new Chart(serverCtx,{type:'line',data:serverData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
 
 // ===== Health Gauge =====
-const healthCtx=document.getElementById('healthGauge').getContext('2d');
-const healthData={labels:['Score','Remaining'],datasets:[{data:[0,100],backgroundColor:['var(--good)',' #ccc'],borderWidth:0}]};
-const healthGauge=new Chart(healthCtx,{type:'doughnut',data:healthData,options:{rotation:-90,circumference:180,cutout:'70%',plugins:{legend:{display:false}}}});
+const healthCtx = document.getElementById('healthGauge').getContext('2d');
+const healthData = {labels:['Score','Remaining'],datasets:[{data:[0,100],backgroundColor:['var(--good)',' #ccc'],borderWidth:0}]};
+const healthGauge = new Chart(healthCtx,{type:'doughnut',data:healthData,options:{rotation:-90,circumference:180,cutout:'70%',plugins:{legend:{display:false},tooltip:{enabled:true}}}});
 
 // ===== Map =====
 let map=L.map('map').setView([0,0],2);
@@ -169,7 +190,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&
 let userMarker=L.marker([0,0]).addTo(map);
 let serverMarkers=[];
 
-// ===== Utils =====
+// ===== Functions =====
 async function getIP(){try{const r=await fetch('https://api.ipify.org?format=json');return(await r.json()).ip}catch{return 'N/A';}}
 async function getGeoInfo(ip){try{const r=await fetch(`https://ipwhois.app/json/${ip}`);const d=await r.json();return{isp:d.org||'N/A',location:`${d.city||'N/A'}, ${d.region||'N/A'}, ${d.country||'N/A'}`,lat:d.latitude||0,lon:d.longitude||0};}catch{return{isp:'N/A',location:'N/A',lat:0,lon:0};}}
 async function getPing(){const s=Date.now();try{await fetch('https://api.ipify.org?format=json');return Date.now()-s}catch{return 0;}}
@@ -179,141 +200,64 @@ async function measureJitterPacketLoss(times=5){let pings=[],fail=0;for(let i=0;
 
 // ===== Alerts =====
 function checkAlerts(ping,jitter,packetLoss,download,upload){
-    let thresholds=JSON.parse(localStorage.getItem('thresholds'))||{ping:150,jitter:30,packet:5,download:10,upload:5};
-    let msgs=[];
-    if(ping>thresholds.ping)msgs.push('High Ping!');
-    if(jitter>thresholds.jitter)msgs.push('High Jitter!');
-    if(packetLoss>thresholds.packet)msgs.push('Packet Loss!');
-    if(download<thresholds.download)msgs.push('Slow Download!');
-    if(upload<thresholds.upload)msgs.push('Slow Upload!');
-    document.getElementById('alerts').innerText=msgs.join(' | ');
-    document.getElementById('alerts').style.color=msgs.length>0?'var(--alert)':'var(--good)';
-    if(msgs.length>0 && Notification.permission==='granted'){new Notification('LinkOn Alert',{body:msgs.join(' | ')})}
+let thresholds=JSON.parse(localStorage.getItem('thresholds'))||{ping:150,jitter:30,packet:5,download:10,upload:5};
+let msgs=[]; if(ping>thresholds.ping)msgs.push('High Ping!'); if(jitter>thresholds.jitter)msgs.push('High Jitter!'); if(packetLoss>thresholds.packet)msgs.push('Packet Loss!');
+if(download<thresholds.download)msgs.push('Slow Download!'); if(upload<thresholds.upload)msgs.push('Slow Upload!');
+document.getElementById('alerts').innerText=msgs.join(' | ');
+document.getElementById('alerts').style.color=msgs.length>0?'var(--alert)':'var(--good)';
+if(msgs.length>0 && Notification.permission==='granted'){new Notification('LinkOn Alert',{body:msgs.join(' | ')})}
 }
 
-// ===== Health Score & Banner =====
+// ===== Health Score =====
 function calculateHealthScore(ping,jitter,packetLoss,download,upload){
-    let score=0;
-    score+=Math.max(0,100-ping)*0.2;
-    score+=Math.max(0,100-jitter)*0.15;
-    score+=Math.max(0,100-packetLoss*20)*0.25;
-    score+=Math.min(download,100)*0.2;
-    score+=Math.min(upload,100)*0.2;
-    return Math.round(score);
+let score=0; score+=Math.max(0,100-ping)*0.2; score+=Math.max(0,100-jitter)*0.15; score+=Math.max(0,100-packetLoss*20)*0.25;
+score+=Math.min(download,100)*0.2; score+=Math.min(upload,100)*0.2; return Math.round(score);
 }
 function updateHealthGauge(ping,jitter,packetLoss,download,upload){
-    const score=calculateHealthScore(ping,jitter,packetLoss,download,upload);
-    healthGauge.data.datasets[0].data[0]=score;
-    healthGauge.data.datasets[0].data[1]=100-score;
-    healthGauge.data.datasets[0].backgroundColor[0]=score>=80?'var(--good)':score>=50?'var(--warn)':'var(--alert)';
-    healthGauge.update();
-    document.getElementById('healthText').innerText=score;
-    const banner=document.getElementById('statusBanner');
-    if(score>=80){banner.style.backgroundColor='var(--good)';banner.innerText=`Excellent Network (${score})`;}
-    else if(score>=50){banner.style.backgroundColor='var(--warn)';banner.innerText=`Moderate Network (${score})`;}
-    else{banner.style.backgroundColor='var(--alert)';banner.innerText=`Poor Network (${score})`;}
+const score=calculateHealthScore(ping,jitter,packetLoss,download,upload);
+healthGauge.data.datasets[0].data[0]=score; healthGauge.data.datasets[0].data[1]=100-score;
+healthGauge.data.datasets[0].backgroundColor[0]=score>=80?'var(--good)':score>=50?'var(--warn)':'var(--alert)'; healthGauge.update();
+document.getElementById('healthText').innerText=score;
+updateStatusBanner(score);
 }
-
-// ===== CSV Export =====
-function exportCSV(){
-    let csv='Time,IP,ISP,Location,Ping,Jitter,PacketLoss,Download,Upload\n';
-    const time=new Date().toLocaleTimeString();
-    csv+=`${time},${document.getElementById('ip').innerText},${document.getElementById('isp').innerText},${document.getElementById('location').innerText},${document.getElementById('ping').innerText},${document.getElementById('jitter').innerText},${document.getElementById('packetloss').innerText},${document.getElementById('download').innerText},${document.getElementById('upload').innerText}\n`;
-    const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;a.download='network_data.csv';a.click();URL.revokeObjectURL(url);
+function updateStatusBanner(score){
+const banner=document.getElementById('statusBanner');
+if(score>=80){banner.style.backgroundColor='var(--good)';banner.innerText=`Excellent Network (${score})`;}
+else if(score>=50){banner.style.backgroundColor='var(--warn)';banner.innerText=`Moderate Network (${score})`;}
+else{banner.style.backgroundColor='var(--alert)';banner.innerText=`Poor Network (${score})`;}
 }
 
 // ===== Server Table =====
 function renderServerTable(){
-    const tbody=document.querySelector('#serverTable tbody');tbody.innerHTML='';
-    servers.forEach(s=>{tbody.innerHTML+=`<tr><td>${s}</td><td>--</td><td>--</td><td>--</td></tr>`;});
+const tbody=document.querySelector('#serverTable tbody');tbody.innerHTML='';
+servers.forEach(s=>{tbody.innerHTML+=`<tr><td>${s}</td><td>--</td><td>--</td><td>--</td></tr>`;});
 }
 
-// ===== Auto Geolocation =====
-let geoInitialized=false;
-async function getUserGeoLocation(){
-    if(!geoInitialized && 'geolocation' in navigator){
-        navigator.geolocation.getCurrentPosition(pos=>{
-            const lat=pos.coords.latitude, lon=pos.coords.longitude;
-            userMarker.setLatLng([lat,lon]).bindPopup(`You<br>Lat:${lat.toFixed(2)}, Lon:${lon.toFixed(2)}`).openPopup();
-            map.setView([lat,lon],6);
-        },async()=>{
-            const ip=await getIP();
-            const geo=await getGeoInfo(ip);
-            userMarker.setLatLng([geo.lat,geo.lon]).bindPopup(`You<br>${geo.location}`).openPopup();
-            map.setView([geo.lat,geo.lon],6);
-            document.getElementById('ip').innerText=ip;
-            document.getElementById('isp').innerText=geo.isp;
-            document.getElementById('location').innerText=geo.location;
-        });
-        geoInitialized=true;
-    }
-}
+// ===== CSV Export =====
+function exportCSV(){let csv='Time,IP,ISP,Location,Ping,Jitter,PacketLoss,Download,Upload\n';const time=new Date().toLocaleTimeString();csv+=`${time},${document.getElementById('ip').innerText},${document.getElementById('isp').innerText},${document.getElementById('location').innerText},${document.getElementById('ping').innerText},${document.getElementById('jitter').innerText},${document.getElementById('packetloss').innerText},${document.getElementById('download').innerText},${document.getElementById('upload').innerText}\n`;const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='network.csv';a.click();URL.revokeObjectURL(url);}
 
-// ===== Update Server Markers =====
-async function updateServerMarkers(){
-    serverMarkers.forEach(m=>map.removeLayer(m));
-    serverMarkers=[];
-    for(const server of servers){
-        try{
-            const start=performance.now();
-            await fetch(server,{mode:'cors'});
-            const latency=Math.round(performance.now()-start);
-            const ip=await getIP(); // approximate for demo
-            const geo=await getGeoInfo(ip);
-            const marker=L.marker([geo.lat,geo.lon]).addTo(map)
-                .bindPopup(`<b>${server}</b><br>Ping:${latency}ms<br>${geo.location}`);
-            serverMarkers.push(marker);
-            // update table
-            const rows=document.querySelectorAll('#serverTable tbody tr');
-            for(let r of rows){
-                if(r.cells[0].innerText===server){
-                    r.cells[1].innerText=latency;r.cells[2].innerText=latency;r.cells[3].innerText=latency;
-                }
-            }
-        }catch{}
-    }
-}
-
-// ===== Charts Update =====
-function updateCharts(timeLabel,ping,download,upload){
-    if(pingData.labels.length>=20){pingData.labels.shift();pingData.datasets[0].data.shift();}
-    pingData.labels.push(timeLabel);pingData.datasets[0].data.push(ping);pingChart.update();
-    if(speedData.labels.length>=20){speedData.labels.shift();speedData.datasets.forEach(d=>d.data.shift());}
-    speedData.labels.push(timeLabel);speedData.datasets[0].data.push(download);speedData.datasets[1].data.push(upload);speedChart.update();
-}
-
-// ===== Main Analyze =====
+// ===== Main =====
 async function analyzeNetwork(){
-    await getUserGeoLocation();
-    const ping=await getPing();
-    const download=await getDownloadSpeed();
-    const upload=await getUploadSpeed();
-    const {jitter,packetLoss}=await measureJitterPacketLoss();
-    const ip=await getIP();
-    const geo=await getGeoInfo(ip);
-    document.getElementById('ip').innerText=ip;
-    document.getElementById('isp').innerText=geo.isp;
-    document.getElementById('location').innerText=geo.location;
-    document.getElementById('ping').innerText=ping;
-    document.getElementById('jitter').innerText=jitter;
-    document.getElementById('packetloss').innerText=packetLoss;
-    document.getElementById('download').innerText=download;
-    document.getElementById('upload').innerText=upload;
-    updateHealthGauge(ping,jitter,packetLoss,download,upload);
-    checkAlerts(ping,jitter,packetLoss,download,upload);
-    updateCharts(new Date().toLocaleTimeString(),ping,download,upload);
-    await updateServerMarkers();
+const ip=await getIP();document.getElementById('ip').innerText=ip;
+const geo=await getGeoInfo(ip);document.getElementById('isp').innerText=geo.isp;document.getElementById('location').innerText=geo.location;
+userMarker.setLatLng([geo.lat,geo.lon]);map.setView([geo.lat,geo.lon],2);
+const pingVal=await getPing();document.getElementById('ping').innerText=pingVal;
+const downloadVal=await getDownloadSpeed();document.getElementById('download').innerText=downloadVal;
+const uploadVal=await getUploadSpeed();document.getElementById('upload').innerText=uploadVal;
+const {jitter,packetLoss}=await measureJitterPacketLoss();document.getElementById('jitter').innerText=jitter;document.getElementById('packetloss').innerText=packetLoss;
+updateHealthGauge(pingVal,jitter,packetLoss,downloadVal,uploadVal);
+checkAlerts(pingVal,jitter,packetLoss,downloadVal,uploadVal);
+
+// Update charts
+pingData.labels.push(new Date().toLocaleTimeString()); pingData.datasets[0].data.push(pingVal); if(pingData.labels.length>20){pingData.labels.shift(); pingData.datasets[0].data.shift();} pingChart.update();
+speedData.labels.push(new Date().toLocaleTimeString()); speedData.datasets[0].data.push(downloadVal); speedData.datasets[1].data.push(uploadVal); if(speedData.labels.length>20){speedData.labels.shift(); speedData.datasets[0].data.shift(); speedData.datasets[1].data.shift();} speedChart.update();
+renderServerTable();
+renderServers();
 }
 
-// ===== Notifications Permission =====
 if(Notification.permission!=='granted'){Notification.requestPermission();}
-
-// ===== Initialize =====
-renderServers();
-renderServerTable();
 analyzeNetwork();
-setInterval(analyzeNetwork,15000);
+setInterval(analyzeNetwork,30000);
 </script>
 </body>
 </html>
