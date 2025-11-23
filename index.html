@@ -25,8 +25,8 @@ body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);margin:
 .info{display:flex;justify-content:space-between;font-size:16px;margin:6px 0;flex-wrap:wrap;align-items:center;}
 .value{display:flex;gap:4px;}
 button{padding:8px 16px;border:none;border-radius:8px;background:var(--primary);color:#fff;margin:5px 5px 0 0;}
-canvas{margin-top:20px;}
-#map{height:300px;border-radius:12px;margin-top:20px;}
+canvas{margin-top:20px;max-width:100%;}
+#map{height:300px;border-radius:12px;margin-top:20px;width:100%;}
 .alert{font-weight:bold;}
 footer{text-align:center;font-size:14px;color:var(--text);margin-top:10px;}
 input{width:60px;padding:5px;margin-left:5px;border-radius:4px;border:1px solid #ccc;}
@@ -53,63 +53,63 @@ table th,table td{border:1px solid #ccc;padding:5px;text-align:center;}
 </div>
 
 <div class="container">
-<!-- Network Info -->
-<div class="card tab-content" id="info">
-<h2>Network Info</h2>
-<div class="info">
-  <span>Network Health Score:</span>
-  <canvas id="healthGauge" width="150" height="75"></canvas>
-  <span id="healthText" style="font-weight:bold; margin-left:10px;">--</span>
-</div>
-<div class="info"><span>IP:</span> <span id="ip">Loading...</span></div>
-<div class="info"><span>ISP:</span> <span id="isp">Loading...</span></div>
-<div class="info"><span>Location:</span> <span id="location">Loading...</span></div>
-<div class="info"><span>Ping:</span> <span class="value"><span id="ping">--</span> ms</span></div>
-<div class="info"><span>Jitter:</span> <span class="value"><span id="jitter">--</span> ms</span></div>
-<div class="info"><span>Packet Loss:</span> <span class="value"><span id="packetloss">0</span> %</span></div>
-<div class="info"><span>Download:</span> <span class="value"><span id="download">--</span> Mbps</span></div>
-<div class="info"><span>Upload:</span> <span class="value"><span id="upload">--</span> Mbps</span></div>
-<div class="info"><span>Network Type:</span> <span id="netType">Detecting...</span></div>
-<div class="info alert" id="alerts"></div>
-<button onclick="analyzeNetwork()">Refresh</button>
-<button onclick="exportCSV()">Export CSV</button>
+  <!-- Network Info -->
+  <div class="card tab-content" id="info">
+    <h2>Network Info</h2>
+    <div class="info">
+      <span>Network Health Score:</span>
+      <canvas id="healthGauge" width="150" height="75"></canvas>
+      <span id="healthText" style="font-weight:bold; margin-left:10px;">--</span>
+    </div>
+    <div class="info"><span>IP:</span> <span id="ip">Loading...</span></div>
+    <div class="info"><span>ISP:</span> <span id="isp">Loading...</span></div>
+    <div class="info"><span>Location:</span> <span id="location">Loading...</span></div>
+    <div class="info"><span>Ping:</span> <span class="value"><span id="ping">--</span> ms</span></div>
+    <div class="info"><span>Jitter:</span> <span class="value"><span id="jitter">--</span> ms</span></div>
+    <div class="info"><span>Packet Loss:</span> <span class="value"><span id="packetloss">0</span> %</span></div>
+    <div class="info"><span>Download:</span> <span class="value"><span id="download">--</span> Mbps</span></div>
+    <div class="info"><span>Upload:</span> <span class="value"><span id="upload">--</span> Mbps</span></div>
+    <div class="info"><span>Network Type:</span> <span id="netType">Detecting...</span></div>
+    <div class="info alert" id="alerts"></div>
+    <button onclick="analyzeNetwork()">Refresh</button>
+    <button onclick="exportCSV()">Export CSV</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="card tab-content" id="charts" style="display:none">
+    <h2>Interactive Charts</h2>
+    <canvas id="pingChart" height="150"></canvas>
+    <canvas id="speedChart" height="150"></canvas>
+    <canvas id="serverChart" height="150"></canvas>
+  </div>
+
+  <!-- Servers -->
+  <div class="card tab-content" id="servers" style="display:none">
+    <h2>Custom Servers</h2>
+    <div id="serverList"></div>
+    <button onclick="addServer()">Add Server</button>
+    <h3>Latency Summary</h3>
+    <table id="serverTable"><thead><tr><th>Server</th><th>Min(ms)</th><th>Max(ms)</th><th>Avg(ms)</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <!-- Settings -->
+  <div class="card tab-content" id="settings" style="display:none">
+    <h2>Alert Thresholds</h2>
+    <div class="info"><span>Ping(ms):</span><input id="thPing" type="number" value="150"></div>
+    <div class="info"><span>Jitter(ms):</span><input id="thJitter" type="number" value="30"></div>
+    <div class="info"><span>Packet Loss(%):</span><input id="thPacket" type="number" value="5"></div>
+    <div class="info"><span>Download(Mbps):</span><input id="thDownload" type="number" value="10"></div>
+    <div class="info"><span>Upload(Mbps):</span><input id="thUpload" type="number" value="5"></div>
+    <button onclick="saveThresholds()">Save Thresholds</button>
+  </div>
+
+  <!-- Map -->
+  <div class="card">
+    <h2>Server & User Map</h2>
+    <div id="map"></div>
+  </div>
 </div>
 
-<!-- Charts -->
-<div class="card tab-content" id="charts" style="display:none">
-<h2>Interactive Charts</h2>
-<canvas id="pingChart" height="150"></canvas>
-<canvas id="speedChart" height="150"></canvas>
-<canvas id="serverChart" height="150"></canvas>
-</div>
-
-<!-- Servers -->
-<div class="card tab-content" id="servers" style="display:none">
-<h2>Custom Servers</h2>
-<div id="serverList"></div>
-<button onclick="addServer()">Add Server</button>
-<h3>Latency Summary</h3>
-<table id="serverTable"><thead><tr><th>Server</th><th>Min(ms)</th><th>Max(ms)</th><th>Avg(ms)</th></tr></thead><tbody></tbody></table>
-</div>
-
-<!-- Settings -->
-<div class="card tab-content" id="settings" style="display:none">
-<h2>Alert Thresholds</h2>
-<div class="info"><span>Ping(ms):</span><input id="thPing" type="number" value="150"></div>
-<div class="info"><span>Jitter(ms):</span><input id="thJitter" type="number" value="30"></div>
-<div class="info"><span>Packet Loss(%):</span><input id="thPacket" type="number" value="5"></div>
-<div class="info"><span>Download(Mbps):</span><input id="thDownload" type="number" value="10"></div>
-<div class="info"><span>Upload(Mbps):</span><input id="thUpload" type="number" value="5"></div>
-<button onclick="saveThresholds()">Save Thresholds</button>
-</div>
-
-<!-- Map -->
-<div class="card">
-<h2>Server & User Map</h2>
-<div id="map"></div>
-</div>
-
-</div>
 <footer>© Manik Roy 2025 | All Rights Reserved.</footer>
 
 <script>
@@ -130,7 +130,6 @@ function toggleTheme(){
 // ===== Servers =====
 let servers=JSON.parse(localStorage.getItem('servers'))||['https://www.google.com','https://www.cloudflare.com'];
 let serverPingHistory={};
-servers.forEach(s=>serverPingHistory[s]=[]);
 function renderServers(){
   const list=document.getElementById('serverList');list.innerHTML='';
   servers.forEach((s,i)=>{
@@ -143,46 +142,31 @@ function renderServers(){
 function addServer(){servers.push('https://');renderServers();saveServers();}
 function removeServer(i){servers.splice(i,1);renderServers();saveServers();}
 function updateServer(i,val){servers[i]=val;saveServers();}
-function saveServers(){
-  localStorage.setItem('servers',JSON.stringify(servers));
-  servers.forEach(s=>{if(!serverPingHistory[s])serverPingHistory[s]=[];});
-  renderServerTable();
-  renderServerChart();
-}
-function saveThresholds(){
-  localStorage.setItem('thresholds',JSON.stringify({
-    ping:parseInt(document.getElementById('thPing').value),
-    jitter:parseInt(document.getElementById('thJitter').value),
-    packet:parseInt(document.getElementById('thPacket').value),
-    download:parseInt(document.getElementById('thDownload').value),
-    upload:parseInt(document.getElementById('thUpload').value)
-  }));
-}
+function saveServers(){localStorage.setItem('servers',JSON.stringify(servers));renderServerTable();}
+function saveThresholds(){localStorage.setItem('thresholds',JSON.stringify({ping:parseInt(document.getElementById('thPing').value),jitter:parseInt(document.getElementById('thJitter').value),packet:parseInt(document.getElementById('thPacket').value),download:parseInt(document.getElementById('thDownload').value),upload:parseInt(document.getElementById('thUpload').value)}));}
 
 // ===== Charts =====
 const pingCtx=document.getElementById('pingChart').getContext('2d');
 const speedCtx=document.getElementById('speedChart').getContext('2d');
 const serverCtx=document.getElementById('serverChart').getContext('2d');
-
 const pingData={labels:[],datasets:[{label:'Ping',data:[],borderColor:'rgba(0,123,255,1)',fill:true,tension:0.3}]};
 const speedData={labels:[],datasets:[{label:'Download',data:[],borderColor:'rgba(40,200,100,1)',fill:false},{label:'Upload',data:[],borderColor:'rgba(255,99,132,1)',fill:false}]};
 const serverData={labels:[],datasets:[]};
-
 const pingChart=new Chart(pingCtx,{type:'line',data:pingData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
 const speedChart=new Chart(speedCtx,{type:'line',data:speedData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
 const serverChart=new Chart(serverCtx,{type:'line',data:serverData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
 
 // ===== Health Gauge =====
-const healthCtx = document.getElementById('healthGauge').getContext('2d');
-const healthData = {labels:['Score','Remaining'],datasets:[{data:[0,100],backgroundColor:['var(--good)',' #ccc'],borderWidth:0}]};
-const healthGauge = new Chart(healthCtx,{type:'doughnut',data:healthData,options:{rotation:-90,circumference:180,cutout:'70%',plugins:{legend:{display:false},tooltip:{enabled:true}}}});
+const healthCtx=document.getElementById('healthGauge').getContext('2d');
+const healthData={labels:['Score','Remaining'],datasets:[{data:[0,100],backgroundColor:['var(--good)',' #ccc'],borderWidth:0}]};
+const healthGauge=new Chart(healthCtx,{type:'doughnut',data:healthData,options:{rotation:-90,circumference:180,cutout:'70%',plugins:{legend:{display:false}}}});
 
 // ===== Map =====
 let map=L.map('map').setView([0,0],2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 let userMarker=L.marker([0,0]).addTo(map);
 
-// ===== Functions =====
+// ===== Network Functions =====
 async function getIP(){try{const r=await fetch('https://api.ipify.org?format=json');return(await r.json()).ip}catch{return 'N/A';}}
 async function getGeoInfo(ip){try{const r=await fetch(`https://ipwhois.app/json/${ip}`);const d=await r.json();return{isp:d.org||'N/A',location:`${d.city||'N/A'}, ${d.region||'N/A'}, ${d.country||'N/A'}`,lat:d.latitude||0,lon:d.longitude||0};}catch{return{isp:'N/A',location:'N/A',lat:0,lon:0};}}
 async function getPing(){const s=Date.now();try{await fetch('https://api.ipify.org?format=json');return Date.now()-s}catch{return 0;}}
@@ -192,138 +176,117 @@ async function measureJitterPacketLoss(times=5){let pings=[],fail=0;for(let i=0;
 
 // ===== Alerts =====
 function checkAlerts(ping,jitter,packetLoss,download,upload){
-  let thresholds=JSON.parse(localStorage.getItem('thresholds'))||{ping:150,jitter:30,packet:5,download:10,upload:5};
-  let msgs=[];
-  if(ping>thresholds.ping)msgs.push('High Ping!');
-  if(jitter>thresholds.jitter)msgs.push('High Jitter!');
-  if(packetLoss>thresholds.packet)msgs.push('Packet Loss!');
-  if(download<thresholds.download)msgs.push('Slow Download!');
-  if(upload<thresholds.upload)msgs.push('Slow Upload!');
-  document.getElementById('alerts').innerText=msgs.join(' | ');
-  document.getElementById('alerts').style.color=msgs.length>0?'var(--alert)':'var(--good)';
-  if(msgs.length>0 && Notification.permission==='granted'){new Notification('LinkOn Alert',{body:msgs.join(' | ')})}
+let thresholds=JSON.parse(localStorage.getItem('thresholds'))||{ping:150,jitter:30,packet:5,download:10,upload:5};
+let msgs=[]; if(ping>thresholds.ping)msgs.push('High Ping!'); if(jitter>thresholds.jitter)msgs.push('High Jitter!'); if(packetLoss>thresholds.packet)msgs.push('Packet Loss!'); if(download<thresholds.download)msgs.push('Slow Download!'); if(upload<thresholds.upload)msgs.push('Slow Upload!');
+document.getElementById('alerts').innerText=msgs.join(' | ');
+document.getElementById('alerts').style.color=msgs.length>0?'var(--alert)':'var(--good)';
+if(msgs.length>0 && Notification.permission==='granted'){new Notification('LinkOn Alert',{body:msgs.join(' | ')})}
 }
 
-// ===== Health Score & Banner =====
+// ===== Health Score =====
 function calculateHealthScore(ping,jitter,packetLoss,download,upload){
-  let score=0;
-  score+=Math.max(0,100-ping)*0.2;
-  score+=Math.max(0,100-jitter)*0.15;
-  score+=Math.max(0,100-packetLoss*20)*0.25;
-  score+=Math.min(download,100)*0.2;
-  score+=Math.min(upload,100)*0.2;
-  return Math.round(score);
+let score=0;
+score+=Math.max(0,100-ping)*0.2;
+score+=Math.max(0,100-jitter)*0.15;
+score+=Math.max(0,100-packetLoss*20)*0.25;
+score+=Math.min(download,100)*0.2;
+score+=Math.min(upload,100)*0.2;
+return Math.round(score);
 }
 function updateHealthGauge(ping,jitter,packetLoss,download,upload){
-  const score=calculateHealthScore(ping,jitter,packetLoss,download,upload);
-  healthGauge.data.datasets[0].data[0]=score;
-  healthGauge.data.datasets[0].data[1]=100-score;
-  healthGauge.data.datasets[0].backgroundColor[0]=score>=80?'var(--good)':score>=50?'var(--warn)':'var(--alert)';
-  healthGauge.update();
-  document.getElementById('healthText').innerText=score;
-  updateStatusBanner(score);
+const score=calculateHealthScore(ping,jitter,packetLoss,download,upload);
+healthGauge.data.datasets[0].data[0]=score;
+healthGauge.data.datasets[0].data[1]=100-score;
+healthGauge.data.datasets[0].backgroundColor[0]=score>=80?'var(--good)':score>=50?'var(--warn)':'var(--alert)';
+healthGauge.update();
+document.getElementById('healthText').innerText=score;
+updateStatusBanner(score);
 }
 function updateStatusBanner(score){
-  const banner=document.getElementById('statusBanner');
-  if(score>=80){banner.style.backgroundColor='var(--good)';banner.innerText=`Excellent Network (${score})`;}
-  else if(score>=50){banner.style.backgroundColor='var(--warn)';banner.innerText=`Moderate Network (${score})`;}
-  else{banner.style.backgroundColor='var(--alert)';banner.innerText=`Poor Network (${score})`;}
+const banner=document.getElementById('statusBanner');
+if(score>=80){banner.style.backgroundColor='var(--good)';banner.innerText=`Excellent Network (${score})`;}
+else if(score>=50){banner.style.backgroundColor='var(--warn)';banner.innerText=`Moderate Network (${score})`;}
+else{banner.style.backgroundColor='var(--alert)';banner.innerText=`Poor Network (${score})`;}
 }
 
-// ===== Server Table & Chart =====
+// ===== Server Table =====
 function renderServerTable(){
-  const tbody=document.querySelector('#serverTable tbody');tbody.innerHTML='';
-  servers.forEach(s=>{
-    const h=serverPingHistory[s]||[];
-    const min=Math.min(...h)||0;
-    const max=Math.max(...h)||0;
-    const avg=h.length>0?(h.reduce((a,b)=>a+b,0)/h.length).toFixed(1):0;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${s}</td><td>${min}</td><td>${max}</td><td>${avg}</td>`;
-    tbody.appendChild(tr);
-  });
+const tbody=document.querySelector('#serverTable tbody');tbody.innerHTML='';
+servers.forEach(s=>{
+  const hist=serverPingHistory[s]||[]; 
+  const min=hist.length?Math.min(...hist):'--'; 
+  const max=hist.length?Math.max(...hist):'--'; 
+  const avg=hist.length?(hist.reduce((a,b)=>a+b,0)/hist.length).toFixed(1):'--';
+  tbody.innerHTML+=`<tr><td>${s}</td><td>${min}</td><td>${max}</td><td>${avg}</td></tr>`;
+});
 }
 function renderServerChart(){
-  serverData.labels=[];serverData.datasets=[];
-  servers.forEach(s=>{
-    serverData.labels.push(s);
-    serverData.datasets.push({label:s,data:serverPingHistory[s],borderColor:'rgba(0,123,255,0.6)',fill:false,tension:0.3});
-  });
-  serverChart.update();
+serverData.labels=Object.keys(serverPingHistory)[0]?Object.keys(serverPingHistory[Object.keys(serverPingHistory)[0]]).map((_,i)=>i+1):[];
+serverData.datasets=[];Object.keys(serverPingHistory).forEach((s,i)=>{
+  serverData.datasets.push({label:s,data:serverPingHistory[s],borderColor:`hsl(${i*60},70%,50%)`,fill:false});
+});serverChart.update();
 }
 
 // ===== CSV Export =====
 function exportCSV(){
-  let csv='Metric,Value\n';
-  csv+=`Ping,${document.getElementById('ping').innerText}\n`;
-  csv+=`Jitter,${document.getElementById('jitter').innerText}\n`;
-  csv+=`Packet Loss,${document.getElementById('packetloss').innerText}\n`;
-  csv+=`Download,${document.getElementById('download').innerText}\n`;
-  csv+=`Upload,${document.getElementById('upload').innerText}\n`;
-  const blob=new Blob([csv],{type:'text/csv'});
-  const link=document.createElement('a');
-  link.href=URL.createObjectURL(blob);
-  link.download='network_report.csv';
-  link.click();
+const rows=[['IP','ISP','Location','Ping','Jitter','PacketLoss','Download','Upload','NetType']];
+rows.push([document.getElementById('ip').innerText,document.getElementById('isp').innerText,document.getElementById('location').innerText,document.getElementById('ping').innerText,document.getElementById('jitter').innerText,document.getElementById('packetloss').innerText,document.getElementById('download').innerText,document.getElementById('upload').innerText,document.getElementById('netType').innerText]);
+let csv='';rows.forEach(r=>{csv+=r.join(',')+'\n';});
+const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='network_data.csv';a.click();URL.revokeObjectURL(url);
 }
 
-// ===== Network Type Detection =====
-function updateNetworkType(){
-  const netTypeElem=document.getElementById('netType');
-  if(navigator.connection && navigator.connection.effectiveType){
-    netTypeElem.innerText=navigator.connection.effectiveType.toUpperCase();
-  }else{
-    netTypeElem.innerText='Unknown';
-  }
-}
-updateNetworkType();
-if(navigator.connection)navigator.connection.addEventListener('change',updateNetworkType);
+// ===== Notifications =====
+if(Notification.permission!=='granted')Notification.requestPermission();
 
-// ===== Main Analyzer =====
+// ===== Hybrid Geolocation =====
+async function getAccurateLocation(){
+  return new Promise(async resolve=>{
+    const geoAsked=localStorage.getItem('geoAsked');
+    if('geolocation' in navigator && geoAsked!=='true'){
+      navigator.geolocation.getCurrentPosition(
+        pos=>{localStorage.setItem('geoAsked','true'); resolve({lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy})},
+        async ()=>{localStorage.setItem('geoAsked','true'); const ipLoc=await getGeoInfo(await getIP()); resolve({lat:ipLoc.lat,lon:ipLoc.lon,accuracy:'IP-based'})},
+        {enableHighAccuracy:true,timeout:10000,maximumAge:0}
+      );
+    }else{
+      const ipLoc=await getGeoInfo(await getIP());
+      resolve({lat:ipLoc.lat,lon:ipLoc.lon,accuracy:'IP-based'});
+    }
+  });
+}
+
+// ===== Main Network Analysis =====
 async function analyzeNetwork(){
-  const ip=await getIP();
-  const geo=await getGeoInfo(ip);
-  const ping=await getPing();
-  const download=await getDownloadSpeed();
-  const upload=await getUploadSpeed();
-  const jp=await measureJitterPacketLoss();
-  document.getElementById('ip').innerText=ip;
-  document.getElementById('isp').innerText=geo.isp;
-  document.getElementById('location').innerText=geo.location;
-  document.getElementById('ping').innerText=ping;
-  document.getElementById('jitter').innerText=jp.jitter;
-  document.getElementById('packetloss').innerText=jp.packetLoss;
-  document.getElementById('download').innerText=download;
-  document.getElementById('upload').innerText=upload;
-  checkAlerts(ping,jp.jitter,jp.packetLoss,download,upload);
+  document.getElementById('netType').innerText='Detecting...';
+  const ip=await getIP();document.getElementById('ip').innerText=ip;
+  const geo=await getGeoInfo(ip);document.getElementById('isp').innerText=geo.isp;document.getElementById('location').innerText=geo.location;
+  const loc=await getAccurateLocation();
+  userMarker.setLatLng([loc.lat,loc.lon]);map.setView([loc.lat,loc.lon],8);
+  
+  const ping=await getPing();document.getElementById('ping').innerText=ping;
+  const download=await getDownloadSpeed();document.getElementById('download').innerText=download;
+  const upload=await getUploadSpeed();document.getElementById('upload').innerText=upload;
+  const jp=await measureJitterPacketLoss();document.getElementById('jitter').innerText=jp.jitter;document.getElementById('packetloss').innerText=jp.packetLoss;
+
   updateHealthGauge(ping,jp.jitter,jp.packetLoss,download,upload);
+  checkAlerts(ping,jp.jitter,jp.packetLoss,download,upload);
 
   // Update charts
-  const now=new Date().toLocaleTimeString();
-  pingData.labels.push(now);pingData.datasets[0].data.push(ping);if(pingData.labels.length>20){pingData.labels.shift();pingData.datasets[0].data.shift();}
-  pingChart.update();
+  if(pingData.labels.length>=20){pingData.labels.shift();pingData.datasets[0].data.shift();}
+  pingData.labels.push(new Date().toLocaleTimeString());pingData.datasets[0].data.push(ping);pingChart.update();
+  if(speedData.labels.length>=20){speedData.labels.shift();speedData.datasets[0].data.forEach(d=>d.data.shift());}
+  speedData.labels.push(new Date().toLocaleTimeString());speedData.datasets[0].data.push(download);speedData.datasets[1].data.push(upload);speedChart.update();
 
-  speedData.labels.push(now);speedData.datasets[0].data.push(download);speedData.datasets[1].data.push(upload);
-  if(speedData.labels.length>20){speedData.labels.shift();speedData.datasets[0].data.shift();speedData.datasets[1].data.shift();}
-  speedChart.update();
-
-  // Servers
-  for(let s of servers){
-    try{const t=await getPing();serverPingHistory[s].push(t);if(serverPingHistory[s].length>20)serverPingHistory[s].shift();}catch{}
-  }
+  // Update server pings
+  for(const s of servers){try{const sp=await fetch(s,{method:'HEAD'}).then(_=>Date.now()).catch(_=>0);serverPingHistory[s]=serverPingHistory[s]||[];serverPingHistory[s].push(sp);if(serverPingHistory[s].length>20)serverPingHistory[s].shift();}catch{}}
   renderServerTable();renderServerChart();
 
-  // Map update
-  userMarker.setLatLng([geo.lat,geo.lon]);
-  map.setView([geo.lat,geo.lon],4);
+  document.getElementById('netType').innerText=navigator.connection?navigator.connection.effectiveType||'N/A':'N/A';
 }
-
 renderServers();
 analyzeNetwork();
-setInterval(analyzeNetwork,30000); // Auto refresh every 30s
-
-// Request notification permission once
-if(Notification.permission!=='granted')Notification.requestPermission();
+setInterval(analyzeNetwork,60000); // auto-refresh every 60s
 </script>
+
 </body>
 </html>
