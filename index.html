@@ -1,329 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinkOn - Network Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<title>Bengali Panchanga 2025–Infinite</title>
 <style>
-:root{--bg:#f0f2f5;--card:#fff;--text:#000;--primary:#007bff;--alert:#ff4d4d;--warn:#ffa500;--good:#28c76f;}
-body.dark{--bg:#1e1e2f;--card:#2e2e3e;--text:#fff;--primary:#4ea3ff;}
-body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:10px;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
-#statusBanner{width:100%;max-width:700px;text-align:center;padding:10px;border-radius:12px;margin:0 auto 10px auto;font-weight:bold;color:#fff;font-size:16px;}
-.header{width:100%;max-width:700px;display:flex;justify-content:center;align-items:center;position:relative;margin-bottom:10px;}
-.header h1{margin:0;font-size:26px;}
-.toggle-btn{position:absolute;right:0;top:0;width:45px;height:45px;border-radius:50%;border:2px solid var(--primary);background:var(--bg);display:flex;justify-content:center;align-items:center;cursor:pointer;font-weight:bold;}
-.tabs{display:flex;width:100%;max-width:700px;margin-bottom:10px;overflow-x:auto;}
-.tab-btn{flex:1;padding:10px;background:var(--card);border:none;border-bottom:2px solid transparent;cursor:pointer;}
-.tab-btn.active{border-bottom:2px solid var(--primary);}
-.container{max-width:700px;width:100%;}
-.card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-.card h2{margin:0 0 10px 0;font-size:20px;}
-.info{display:flex;justify-content:space-between;font-size:16px;margin:6px 0;flex-wrap:wrap;align-items:center;}
-.value{display:flex;gap:4px;}
-button{padding:8px 16px;border:none;border-radius:8px;background:var(--primary);color:#fff;margin:5px 5px 0 0;}
-canvas{margin-top:20px;}
-#map{height:300px;border-radius:12px;margin-top:20px;}
-.alert{font-weight:bold;}
-footer{text-align:center;font-size:14px;color:var(--text);margin-top:10px;}
-input{width:60px;padding:5px;margin-left:5px;border-radius:4px;border:1px solid #ccc;}
-.server-input{width:calc(100% - 100px);margin-right:5px;padding:5px;border-radius:4px;border:1px solid #ccc;}
-.server-row{display:flex;margin-bottom:5px;align-items:center;}
-table{width:100%;border-collapse:collapse;margin-top:10px;}
-table th,table td{border:1px solid #ccc;padding:5px;text-align:center;}
+html,body{margin:0;padding:0;font-family:sans-serif;background:#f5f5f5;color:#222;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+#app{background:#fff;border-radius:20px;border:1px solid #ccc;padding:25px;width:600px;max-width:95%;box-shadow:0 8px 20px rgba(0,0,0,0.15);position:relative;font-size:1.1em;}
+h1{text-align:center;margin:0 0 10px 0;}
+#inputs{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:15px;}
+#inputs input{width:60px;padding:8px;border-radius:8px;border:1px solid #ccc;text-align:center;}
+#inputs button{padding:6px 12px;border-radius:6px;border:1px solid #ccc;background:#e0e0e0;cursor:pointer;}
+#inputs button:hover{background:#d0d0d0;}
+#calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.weekday,.day{text-align:center;padding:10px;border-radius:8px;}
+.weekday{font-weight:bold;background:#f0f0f0;}
+.day{background:#fafafa;transition:0.2s;cursor:pointer;}
+.day:hover{background:#e8f0fe;}
+.day.festival{background:#ffd699;}
+.day.selected{background:#90caf9;color:#fff;}
+#day-details{margin-top:15px;font-size:0.95em;white-space:pre-line;background:#f9f9f9;padding:12px;border-radius:8px;border:1px solid #ddd;max-height:50vh;overflow-y:auto;}
+#toggleDark{position:absolute;top:15px;right:15px;width:40px;height:40px;background:#e0e0e0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;}
+#about-section{margin-top:15px;}
+#aboutToggle{padding:6px 12px;border-radius:6px;border:1px solid #ccc;background:#e0e0e0;cursor:pointer;}
+#aboutToggle:hover{background:#d0d0d0;}
+#aboutText{display:none;margin-top:10px;background:#f1f1f1;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:0.9em;}
+footer{margin-top:20px;text-align:center;color:#555;font-size:0.85em;}
+.dark body{background:#1f1f1f;color:#eee;}
+.dark #app{background:#2b2b2b;color:#eee;border:1px solid #444;}
+.dark .weekday{background:#3a3a3a;}
+.dark .day{background:#3a3a3a;color:#eee;}
+.dark .day:hover{background:#505050;}
+.dark .day.festival{background:#ffb74d;color:#000;}
+.dark #day-details{background:#3a3a3a;border:1px solid #555;color:#eee;}
+.dark #toggleDark{background:#444;color:#eee;}
+.dark #inputs button{background:#555;color:#eee;border:1px solid #666;}
+.dark #inputs button:hover{background:#666;}
+.dark #aboutText{background:#444;border:1px solid #666;color:#eee;}
+@media screen and (max-width:600px){#app{width:95%;padding:15px;font-size:1em;}#inputs input{width:50px;padding:6px;}#inputs button{padding:5px 8px;font-size:0.85em;} .weekday,.day{padding:8px;font-size:0.85em;}#day-details{font-size:0.9em;padding:10px;max-height:40vh;}#aboutText{font-size:0.85em;}}
 </style>
 </head>
 <body>
-
-<div id="statusBanner">Loading Network Status...</div>
-
-<div class="header">
-  <h1>LinkOn</h1>
-  <button class="toggle-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+<div id="app">
+<h1>Bengali Panchanga</h1>
+<div id="toggleDark">🌓</div>
+<div id="inputs">
+  <button id="prevYear">« Year</button>
+  <input type="number" id="yearInput" value="2025">
+  <button id="nextYear">Year »</button>
+  <button id="prevMonth">« Month</button>
+  <input type="number" id="monthInput" min="1" max="12" value="1">
+  <button id="nextMonth">Month »</button>
 </div>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab(event,'info')">Network Info</button>
-  <button class="tab-btn" onclick="showTab(event,'charts')">Charts</button>
-  <button class="tab-btn" onclick="showTab(event,'servers')">Servers</button>
-  <button class="tab-btn" onclick="showTab(event,'settings')">Settings</button>
+<div id="calendar"></div>
+<div id="day-details"></div>
+<div id="about-section">
+  <button id="aboutToggle">About</button>
+  <div id="aboutText">
+    The app is developed by <strong>Manik Roy</strong> (<a href="mailto:astromerty@gmail.com">astromerty@gmail.com</a>), a dedicated programmer creating intuitive, feature-rich, and user-friendly applications, focused on innovation and seamless digital experiences.
+  </div>
 </div>
-
-<div class="container">
-<!-- Network Info -->
-<div class="card tab-content" id="info">
-<h2>Network Info</h2>
-<div class="info">
-  <span>Network Health Score:</span>
-  <canvas id="healthGauge" width="150" height="75"></canvas>
-  <span id="healthText" style="font-weight:bold; margin-left:10px;">--</span>
+<footer>© Manik Roy 2025</footer>
 </div>
-<div class="info"><span>IP:</span> <span id="ip">Loading...</span></div>
-<div class="info"><span>ISP:</span> <span id="isp">Loading...</span></div>
-<div class="info"><span>Location:</span> <span id="location">Loading...</span></div>
-<div class="info"><span>Ping:</span> <span class="value"><span id="ping">--</span> ms</span></div>
-<div class="info"><span>Jitter:</span> <span class="value"><span id="jitter">--</span> ms</span></div>
-<div class="info"><span>Packet Loss:</span> <span class="value"><span id="packetloss">0</span> %</span></div>
-<div class="info"><span>Download:</span> <span class="value"><span id="download">--</span> Mbps</span></div>
-<div class="info"><span>Upload:</span> <span class="value"><span id="upload">--</span> Mbps</span></div>
-<div class="info"><span>Network Type:</span> <span id="netType">Detecting...</span></div>
-<div class="info alert" id="alerts"></div>
-<button onclick="analyzeNetwork()">Refresh</button>
-<button onclick="exportCSV()">Export CSV</button>
-</div>
-
-<!-- Charts -->
-<div class="card tab-content" id="charts" style="display:none">
-<h2>Interactive Charts</h2>
-<canvas id="pingChart" height="150"></canvas>
-<canvas id="speedChart" height="150"></canvas>
-<canvas id="serverChart" height="150"></canvas>
-</div>
-
-<!-- Servers -->
-<div class="card tab-content" id="servers" style="display:none">
-<h2>Custom Servers</h2>
-<div id="serverList"></div>
-<button onclick="addServer()">Add Server</button>
-<h3>Latency Summary</h3>
-<table id="serverTable"><thead><tr><th>Server</th><th>Min(ms)</th><th>Max(ms)</th><th>Avg(ms)</th></tr></thead><tbody></tbody></table>
-</div>
-
-<!-- Settings -->
-<div class="card tab-content" id="settings" style="display:none">
-<h2>Alert Thresholds</h2>
-<div class="info"><span>Ping(ms):</span><input id="thPing" type="number" value="150"></div>
-<div class="info"><span>Jitter(ms):</span><input id="thJitter" type="number" value="30"></div>
-<div class="info"><span>Packet Loss(%):</span><input id="thPacket" type="number" value="5"></div>
-<div class="info"><span>Download(Mbps):</span><input id="thDownload" type="number" value="10"></div>
-<div class="info"><span>Upload(Mbps):</span><input id="thUpload" type="number" value="5"></div>
-<button onclick="saveThresholds()">Save Thresholds</button>
-</div>
-
-<!-- Map -->
-<div class="card">
-<h2>Server & User Map</h2>
-<div id="map"></div>
-</div>
-
-</div>
-<footer>© Manik Roy 2025 | All Rights Reserved.</footer>
-
 <script>
-// ===== Tabs =====
-function showTab(evt,tab){
-  document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
-  document.getElementById(tab).style.display='block';
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  evt.currentTarget.classList.add('active');
+// Dark mode toggle
+document.getElementById('toggleDark').addEventListener('click',()=>document.body.classList.toggle('dark'));
+// About toggle
+document.getElementById('aboutToggle').addEventListener('click', ()=>{
+  const aboutText=document.getElementById('aboutText');
+  aboutText.style.display = aboutText.style.display==='none'?'block':'none';
+});
+// App state
+let APP={lat:23.8103,lon:90.4125,month:0,year:2025};
+
+// Utilities
+function formatTime12h(time){
+  const h=Math.floor(time);
+  const m=Math.round((time-h)*60);
+  const ampm=h>=12?"PM":"AM";
+  const hour=h%12||12;
+  return `${hour}:${m.toString().padStart(2,'0')} ${ampm}`;
 }
 
-// ===== Dark Mode =====
-function toggleTheme(){
-  document.body.classList.toggle('dark');
-  document.getElementById('themeToggle').innerText=document.body.classList.contains('dark')?'☀':'🌙';
+// Sunrise/Sunset calculation (approximation)
+function calculateSunTimes(date,lat,lon){
+  const rad=Math.PI/180;
+  const N=(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-Date.UTC(date.getFullYear(),0,0))/(1000*60*60*24);
+  const decl=23.45*Math.sin(rad*360*(284+N)/365);
+  const ws=Math.acos(-Math.tan(lat*rad)*Math.tan(decl*rad));
+  const dayLength=2*ws/15;
+  const solarNoon=12-(lon/15);
+  const sunrise=solarNoon-dayLength/2;
+  const sunset=solarNoon+dayLength/2;
+  return {sunrise,sunset};
 }
 
-// ===== Servers =====
-let servers=JSON.parse(localStorage.getItem('servers'))||['https://www.google.com','https://www.cloudflare.com'];
-let serverPingHistory={};
-servers.forEach(s=>serverPingHistory[s]=[]);
-function renderServers(){
-  const list=document.getElementById('serverList');list.innerHTML='';
-  servers.forEach((s,i)=>{
-    const row=document.createElement('div');
-    row.className='server-row';
-    row.innerHTML=`<input class="server-input" value="${s}" onchange="updateServer(${i},this.value)"><button onclick="removeServer(${i})">Remove</button>`;
-    list.appendChild(row);
-  });
-}
-function addServer(){servers.push('https://');renderServers();saveServers();}
-function removeServer(i){servers.splice(i,1);renderServers();saveServers();}
-function updateServer(i,val){servers[i]=val;saveServers();}
-function saveServers(){
-  localStorage.setItem('servers',JSON.stringify(servers));
-  servers.forEach(s=>{if(!serverPingHistory[s])serverPingHistory[s]=[];});
-  renderServerTable();
-  renderServerChart();
-}
-function saveThresholds(){
-  localStorage.setItem('thresholds',JSON.stringify({
-    ping:parseInt(document.getElementById('thPing').value),
-    jitter:parseInt(document.getElementById('thJitter').value),
-    packet:parseInt(document.getElementById('thPacket').value),
-    download:parseInt(document.getElementById('thDownload').value),
-    upload:parseInt(document.getElementById('thUpload').value)
-  }));
+// Muhurtas
+function calculateMuhurtas(date,lat,lon){
+  const sun=calculateSunTimes(date,lat,lon);
+  const weekday=date.getDay();
+  const dayLength=sun.sunset-sun.sunrise;
+  const part=dayLength/8;
+  const rahuOffsets=[1,7,4,6,2,5,3];
+  const rahuStart=sun.sunrise+rahuOffsets[weekday]*part/8;
+  const rahuEnd=rahuStart+part;
+  const muhurtas=[
+    {name:"Rahu Kalam",time:[rahuStart,rahuEnd],meaning:"Generally inauspicious; avoid starting new work."},
+    {name:"Yamaganda",time:[sun.sunrise+part*0.5,sun.sunrise+part*1.5],meaning:"Avoid for new ventures."},
+    {name:"Gulika",time:[sun.sunrise+part*1,sun.sunrise+part*2],meaning:"Avoid for important works."},
+    {name:"Abhijit Muhurta",time:[11.4,12.4],meaning:"Highly auspicious for rituals and ceremonies."},
+    {name:"Amrit Kaal",time:[6,7.5],meaning:"Very auspicious for rituals and ceremonies."},
+    {name:"Chandra Kaal",time:[15,16.5],meaning:"Good for starting journeys or new projects."},
+    {name:"Shubh Muhurta Morning",time:[6,8],meaning:"Generally favorable for new work."},
+    {name:"Shubh Muhurta Evening",time:[16,18],meaning:"Good for important tasks and ceremonies."},
+    {name:"Lakshmi Muhurta",time:[9,10],meaning:"Auspicious for wealth-related ceremonies."},
+    {name:"Vijaya Muhurta",time:[14.5,15.5],meaning:"Very favorable for success-oriented tasks."},
+    {name:"Griha Pravesh Muhurta",time:[11,12],meaning:"Auspicious for housewarming."},
+    {name:"Vivah Muhurta",time:[8,9],meaning:"Best for weddings."},
+    {name:"Sthapana Muhurta",time:[10.5,11.5],meaning:"For temple or idol installations."},
+    {name:"Yatra Muhurta",time:[7,8],meaning:"Good for journeys and travels."},
+    {name:"Sampanna Muhurta",time:[12.5,13.5],meaning:"Auspicious for business openings."}
+  ];
+  return muhurtas;
 }
 
-// ===== Charts =====
-const pingCtx=document.getElementById('pingChart').getContext('2d');
-const speedCtx=document.getElementById('speedChart').getContext('2d');
-const serverCtx=document.getElementById('serverChart').getContext('2d');
+// Festival data (example 2025–2030)
+const festivalData={
+"2025-01-01":["New Year’s Day"],
+"2025-04-14":["Pohela Boishakh"],
+"2025-10-01":["Durga Puja"],
+"2026-01-01":["New Year’s Day"],
+"2026-04-14":["Pohela Boishakh"],
+"2026-09-20":["Durga Puja"]
+// Add further years up to infinite as needed
+};
 
-const pingData={labels:[],datasets:[{label:'Ping',data:[],borderColor:'rgba(0,123,255,1)',fill:true,tension:0.3}]};
-const speedData={labels:[],datasets:[{label:'Download',data:[],borderColor:'rgba(40,200,100,1)',fill:false},{label:'Upload',data:[],borderColor:'rgba(255,99,132,1)',fill:false}]};
-const serverData={labels:[],datasets:[]};
-
-const pingChart=new Chart(pingCtx,{type:'line',data:pingData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
-const speedChart=new Chart(speedCtx,{type:'line',data:speedData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
-const serverChart=new Chart(serverCtx,{type:'line',data:serverData,options:{responsive:true,plugins:{zoom:{pan:{enabled:true,mode:'x'},zoom:{enabled:true,mode:'x'}}},scales:{y:{beginAtZero:true}}}});
-
-// ===== Health Gauge =====
-const healthCtx = document.getElementById('healthGauge').getContext('2d');
-const healthData = {labels:['Score','Remaining'],datasets:[{data:[0,100],backgroundColor:['var(--good)',' #ccc'],borderWidth:0}]};
-const healthGauge = new Chart(healthCtx,{type:'doughnut',data:healthData,options:{rotation:-90,circumference:180,cutout:'70%',plugins:{legend:{display:false},tooltip:{enabled:true}}}});
-
-// ===== Map =====
-let map=L.map('map').setView([0,0],2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
-let userMarker=L.marker([0,0]).addTo(map);
-
-// ===== Functions =====
-async function getIP(){try{const r=await fetch('https://api.ipify.org?format=json');return(await r.json()).ip}catch{return 'N/A';}}
-async function getGeoInfo(ip){try{const r=await fetch(`https://ipwhois.app/json/${ip}`);const d=await r.json();return{isp:d.org||'N/A',location:`${d.city||'N/A'}, ${d.region||'N/A'}, ${d.country||'N/A'}`,lat:d.latitude||0,lon:d.longitude||0};}catch{return{isp:'N/A',location:'N/A',lat:0,lon:0};}}
-async function getPing(){const s=Date.now();try{await fetch('https://api.ipify.org?format=json');return Date.now()-s}catch{return 0;}}
-async function getDownloadSpeed(){try{const img="https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg";const start=Date.now();await fetch(img+"?cache="+Math.random());const dur=(Date.now()-start)/1000;return ((3*8*1024*1024/dur)/(1024*1024)).toFixed(2);}catch{return 0;}}
-async function getUploadSpeed(){try{const data=new Blob([new ArrayBuffer(2*1024*1024)]);const start=Date.now();await fetch('https://httpbin.org/post',{method:'POST',body:data});const dur=(Date.now()-start)/1000;return ((2*8*1024*1024/dur)/(1024*1024)).toFixed(2);}catch{return 0;}}
-async function measureJitterPacketLoss(times=5){let pings=[],fail=0;for(let i=0;i<times;i++){try{const t=await getPing();if(isNaN(t)){fail++;}else{pings.push(t);}}catch{fail++;}}const avg=pings.reduce((a,b)=>a+b,0)/pings.length||0;const jitter=Math.sqrt(pings.reduce((a,b)=>a+Math.pow(b-avg,2),0)/pings.length)||0;const packetLoss=(fail/times*100).toFixed(1);return{jitter:jitter.toFixed(1),packetLoss};}
-
-// ===== Alerts =====
-function checkAlerts(ping,jitter,packetLoss,download,upload){
-  let thresholds=JSON.parse(localStorage.getItem('thresholds'))||{ping:150,jitter:30,packet:5,download:10,upload:5};
-  let msgs=[];
-  if(ping>thresholds.ping)msgs.push('High Ping!');
-  if(jitter>thresholds.jitter)msgs.push('High Jitter!');
-  if(packetLoss>thresholds.packet)msgs.push('Packet Loss!');
-  if(download<thresholds.download)msgs.push('Slow Download!');
-  if(upload<thresholds.upload)msgs.push('Slow Upload!');
-  document.getElementById('alerts').innerText=msgs.join(' | ');
-  document.getElementById('alerts').style.color=msgs.length>0?'var(--alert)':'var(--good)';
-  if(msgs.length>0 && Notification.permission==='granted'){new Notification('LinkOn Alert',{body:msgs.join(' | ')})}
+// Panchanga
+function getPanchangaForDay(year,month,day){
+  const dateStr=`${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const festivals=festivalData[dateStr]||[];
+  return {tithi:"SP10",yoga:"VS",karana:"BA",festivals};
 }
 
-// ===== Health Score & Banner =====
-function calculateHealthScore(ping,jitter,packetLoss,download,upload){
-  let score=0;
-  score+=Math.max(0,100-ping)*0.2;
-  score+=Math.max(0,100-jitter)*0.15;
-  score+=Math.max(0,100-packetLoss*20)*0.25;
-  score+=Math.min(download,100)*0.2;
-  score+=Math.min(upload,100)*0.2;
-  return Math.round(score);
-}
-function updateHealthGauge(ping,jitter,packetLoss,download,upload){
-  const score=calculateHealthScore(ping,jitter,packetLoss,download,upload);
-  healthGauge.data.datasets[0].data[0]=score;
-  healthGauge.data.datasets[0].data[1]=100-score;
-  healthGauge.data.datasets[0].backgroundColor[0]=score>=80?'var(--good)':score>=50?'var(--warn)':'var(--alert)';
-  healthGauge.update();
-  document.getElementById('healthText').innerText=score;
-  updateStatusBanner(score);
-}
-function updateStatusBanner(score){
-  const banner=document.getElementById('statusBanner');
-  if(score>=80){banner.style.backgroundColor='var(--good)';banner.innerText=`Excellent Network (${score})`;}
-  else if(score>=50){banner.style.backgroundColor='var(--warn)';banner.innerText=`Moderate Network (${score})`;}
-  else{banner.style.backgroundColor='var(--alert)';banner.innerText=`Poor Network (${score})`;}
-}
-
-// ===== Server Table & Chart =====
-function renderServerTable(){
-  const tbody=document.querySelector('#serverTable tbody');tbody.innerHTML='';
-  servers.forEach(s=>{
-    const h=serverPingHistory[s]||[];
-    const min=Math.min(...h)||0;
-    const max=Math.max(...h)||0;
-    const avg=h.length>0?(h.reduce((a,b)=>a+b,0)/h.length).toFixed(1):0;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${s}</td><td>${min}</td><td>${max}</td><td>${avg}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-function renderServerChart(){
-  serverData.labels=[];serverData.datasets=[];
-  servers.forEach(s=>{
-    serverData.labels.push(s);
-    serverData.datasets.push({label:s,data:serverPingHistory[s],borderColor:'rgba(0,123,255,0.6)',fill:false,tension:0.3});
-  });
-  serverChart.update();
-}
-
-// ===== CSV Export =====
-function exportCSV(){
-  let csv='Metric,Value\n';
-  csv+=`Ping,${document.getElementById('ping').innerText}\n`;
-  csv+=`Jitter,${document.getElementById('jitter').innerText}\n`;
-  csv+=`Packet Loss,${document.getElementById('packetloss').innerText}\n`;
-  csv+=`Download,${document.getElementById('download').innerText}\n`;
-  csv+=`Upload,${document.getElementById('upload').innerText}\n`;
-  const blob=new Blob([csv],{type:'text/csv'});
-  const link=document.createElement('a');
-  link.href=URL.createObjectURL(blob);
-  link.download='network_report.csv';
-  link.click();
-}
-
-// ===== Network Type Detection =====
-function updateNetworkType(){
-  const netTypeElem=document.getElementById('netType');
-  if(navigator.connection && navigator.connection.effectiveType){
-    netTypeElem.innerText=navigator.connection.effectiveType.toUpperCase();
-  }else{
-    netTypeElem.innerText='Unknown';
+// Calendar rendering
+function renderCalendar(){
+  const cal=document.getElementById('calendar');
+  cal.innerHTML="";
+  const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  weekdays.forEach(d=>{const w=document.createElement('div'); w.className='weekday'; w.textContent=d; cal.appendChild(w);});
+  const firstDay=new Date(APP.year,APP.month,1).getDay();
+  for(let i=0;i<firstDay;i++){const empty=document.createElement('div');cal.appendChild(empty);}
+  const daysInMonth=new Date(APP.year,APP.month+1,0).getDate();
+  for(let d=1;d<=daysInMonth;d++){
+    const dayDiv=document.createElement('div');
+    const dayData=getPanchangaForDay(APP.year,APP.month+1,d);
+    dayDiv.className='day'+(dayData.festivals.length>0?' festival':'');
+    dayDiv.textContent=d;
+    dayDiv.addEventListener('click',()=>showDayDetails(APP.year,APP.month+1,d));
+    cal.appendChild(dayDiv);
   }
 }
-updateNetworkType();
-if(navigator.connection)navigator.connection.addEventListener('change',updateNetworkType);
 
-// ===== Main Analyzer =====
-async function analyzeNetwork(){
-  const ip=await getIP();
-  const geo=await getGeoInfo(ip);
-  const ping=await getPing();
-  const download=await getDownloadSpeed();
-  const upload=await getUploadSpeed();
-  const jp=await measureJitterPacketLoss();
-  document.getElementById('ip').innerText=ip;
-  document.getElementById('isp').innerText=geo.isp;
-  document.getElementById('location').innerText=geo.location;
-  document.getElementById('ping').innerText=ping;
-  document.getElementById('jitter').innerText=jp.jitter;
-  document.getElementById('packetloss').innerText=jp.packetLoss;
-  document.getElementById('download').innerText=download;
-  document.getElementById('upload').innerText=upload;
-  checkAlerts(ping,jp.jitter,jp.packetLoss,download,upload);
-  updateHealthGauge(ping,jp.jitter,jp.packetLoss,download,upload);
+// Show day details
+function showDayDetails(year,month,day){
+  const date=new Date(year,month-1,day);
+  const panch=getPanchangaForDay(year,month,day);
+  const muhurtas=calculateMuhurtas(date,APP.lat,APP.lon);
+  const details=`Date: ${day}-${month}-${year}
+Latitude: ${APP.lat.toFixed(4)}
+Longitude: ${APP.lon.toFixed(4)}
+Festivals: ${panch.festivals.join(", ")||"None"}
+Tithi: ${panch.tithi}
+Yoga: ${panch.yoga}
+Karana: ${panch.karana}
 
-  // Update charts
-  const now=new Date().toLocaleTimeString();
-  pingData.labels.push(now);pingData.datasets[0].data.push(ping);if(pingData.labels.length>20){pingData.labels.shift();pingData.datasets[0].data.shift();}
-  pingChart.update();
-
-  speedData.labels.push(now);speedData.datasets[0].data.push(download);speedData.datasets[1].data.push(upload);
-  if(speedData.labels.length>20){speedData.labels.shift();speedData.datasets[0].data.shift();speedData.datasets[1].data.shift();}
-  speedChart.update();
-
-  // Servers
-  for(let s of servers){
-    try{const t=await getPing();serverPingHistory[s].push(t);if(serverPingHistory[s].length>20)serverPingHistory[s].shift();}catch{}
-  }
-  renderServerTable();renderServerChart();
-
-  // Map update
-  userMarker.setLatLng([geo.lat,geo.lon]);
-  map.setView([geo.lat,geo.lon],4);
+Muhurtas:
+${muhurtas.map((m,i)=>`${i+1}. ${m.name}: ${formatTime12h(m.time[0])} - ${formatTime12h(m.time[1])} - ${m.meaning}`).join("\n")}
+`;
+  document.getElementById('day-details').textContent=details;
 }
 
-renderServers();
-analyzeNetwork();
-setInterval(analyzeNetwork,30000); // Auto refresh every 30s
+// Navigation
+document.getElementById('prevYear').addEventListener('click',()=>{APP.year--;document.getElementById('yearInput').value=APP.year;renderCalendar();});
+document.getElementById('nextYear').addEventListener('click',()=>{APP.year++;document.getElementById('yearInput').value=APP.year;renderCalendar();});
+document.getElementById('yearInput').addEventListener('change',()=>{APP.year=parseInt(document.getElementById('yearInput').value)||2025;renderCalendar();});
+document.getElementById('prevMonth').addEventListener('click',()=>{APP.month=(APP.month+11)%12;document.getElementById('monthInput').value=APP.month+1;renderCalendar();});
+document.getElementById('nextMonth').addEventListener('click',()=>{APP.month=(APP.month+1)%12;document.getElementById('monthInput').value=APP.month+1;renderCalendar();});
+document.getElementById('monthInput').addEventListener('change',()=>{APP.month=(parseInt(document.getElementById('monthInput').value)-1)||0;renderCalendar();});
 
-// Request notification permission once
-if(Notification.permission!=='granted')Notification.requestPermission();
+// Auto geolocation
+if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{APP.lat=pos.coords.latitude;APP.lon=pos.coords.longitude;renderCalendar();});}
+
+// Init
+APP.month=new Date().getMonth();
+APP.year=new Date().getFullYear();
+document.getElementById('yearInput').value=APP.year;
+document.getElementById('monthInput').value=APP.month+1;
+renderCalendar();
 </script>
 </body>
 </html>
